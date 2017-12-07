@@ -1,0 +1,6 @@
+//syntax = "proto3";
+option java_package="IM.Contract";
+option java_outer_classname = "AppMsgProto";
+message AppMsg {
+ required int32 msgtype = 1;//同上  
+}
