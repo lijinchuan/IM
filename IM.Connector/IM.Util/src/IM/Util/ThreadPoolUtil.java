@@ -1,4 +1,4 @@
-package IM.Connector;
+package IM.Util;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
