@@ -17,5 +17,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/IM.Contract"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/IM.Util"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

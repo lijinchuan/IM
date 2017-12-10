@@ -36,12 +36,6 @@ public class FromAppHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
-
-		Session session = new Session();
-		session.setId("ljc" + new Random().nextInt(1000));
-		session.setConntime(new Date());
-		ctx.attr(sessionattr).set(session);
-
 		// ctx.attr()
 		System.out.println("new user:" + ctx.name());
 	}
@@ -240,9 +234,6 @@ public class FromAppHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
-		@SuppressWarnings("deprecation")
-		Session s = ctx.attr(sessionattr).get();
-		System.out.println(s.getId());
 		super.channelReadComplete(ctx);
 	}
 }

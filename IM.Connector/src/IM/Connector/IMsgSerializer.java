@@ -2,9 +2,10 @@ package IM.Connector;
 
 import java.nio.ByteBuffer;
 
-import io.netty.buffer.ByteBuf;
+import IM.Connector.Exception.MsgSerializerException;
+import IM.Contract.MsgType;
 
 public interface IMsgSerializer {
-    public Object ReadObject(int msgtype,ByteBuffer buffer) throws Exception;
-    public ByteBuf WriteObject(int msgtype,Object obj,ByteBuf buffer) throws Exception;
+    public Object readObject(MsgType msgtype,ByteBuffer buffer) throws MsgSerializerException;
+    public byte[] writeObject(MsgType msgtype,Object obj) throws MsgSerializerException;
 }

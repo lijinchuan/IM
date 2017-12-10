@@ -42,7 +42,7 @@ public class Client {
 
 			} catch (UnknownHostException e) {
 				Exception ne = new Exception(
-						String.format("杩炴帴鍒拌繙绋嬫湇鍔″櫒%s澶辫触锛岀鍙�:%d锛屽師鍥�:%s", _serverIp, _serverPort, e.getMessage()));
+						String.format("连接到远程服务器%s失败，端口:%d，原因:%s", _serverIp, _serverPort, e.getMessage()));
 				throw ne;
 
 			} catch (IOException e) {

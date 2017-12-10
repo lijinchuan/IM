@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.Random;
 
+import IM.Contract.MsgType;
+import IM.Contract.ResponseCode;
 import IM.Util.ThreadPoolUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -39,12 +41,6 @@ public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
-
-		Session session = new Session();
-		session.setId("ljc" + new Random().nextInt(1000));
-		session.setConntime(new Date());
-		ctx.attr(sessionattr).set(session);
-
 		// ctx.attr()
 		System.out.println("new user:" + ctx.name());
 	}
@@ -163,26 +159,42 @@ public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
 
 	private void readFinished(ChannelHandlerContext ctx, ByteBuffer data) throws Exception {
 		data.flip();
-		// System.out.println(new String(data.array(), "utf-8"));
-		int msgtype = data.getInt();
+		
+		System.out.println("new msg");
+		MsgType msgtype = MsgType.valueOf(data.getShort() & 65535);
+		if(msgtype==null) {
+			Response.sendResponseCode(ctx, this._msgSerializer, ResponseCode.NoMsgType);
+			return;
+		}
+
 		switch (msgtype) {
-		case 0: {
-			System.out.println("回显:"+(String)this._msgSerializer.ReadObject(msgtype, data));
+		case ECHO: {
+
+			String s=(String) this._msgSerializer.readObject(msgtype, data);
+			System.out.println("回显:" + s);
+			
+			Response.sendEcho(ctx, this._msgSerializer, s);
+			
 			break;
 		}
-		case 1:
-		{
+		case HeartBeat: {
+			ctx.attr(Session.LASTHEARTBEATTIME).set(new Date());
 			break;
 		}
-		default:
-		{
-			//说明,除非任务比较轻,不要直接处理,要交给MsgProcessor
-			MsgProcessor proc=new MsgProcessor(msgtype, data,ctx);
+		case Login: {
+			if (ctx.hasAttr(Session.UID)) {
+               Response.sendResponseCode(ctx, this._msgSerializer, ResponseCode.OK);
+			}
+			break;
+		}
+		default: {
+			// 说明,除非任务比较轻,不要直接处理,要交给MsgProcessor
+			MsgProcessor proc = new MsgProcessor(msgtype, data, ctx);
 			ThreadPoolUtil.QueueUserWorkItem(proc);
 			break;
 		}
 		}
-		this._msgSerializer.ReadObject(msgtype, data);
+		this._msgSerializer.readObject(msgtype, data);
 		channelReadComplete(ctx);
 	}
 
@@ -223,9 +235,6 @@ public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
-		@SuppressWarnings("deprecation")
-		Session s = ctx.attr(sessionattr).get();
-		System.out.println(s.getId());
 		super.channelReadComplete(ctx);
 	}
 }
