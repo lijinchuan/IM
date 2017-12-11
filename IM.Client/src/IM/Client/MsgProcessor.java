@@ -12,7 +12,7 @@ public class MsgProcessor implements Runnable{
     public MsgProcessor(int msgtype,ByteBuffer msgdata,ChannelHandlerContext context)
     {
 	   this._msgtype=msgtype;
-	   this._msgdata=_msgdata;
+	   this._msgdata=msgdata;
 	   this._context=context;
     }
 

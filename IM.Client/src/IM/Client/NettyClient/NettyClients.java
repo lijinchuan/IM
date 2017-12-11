@@ -50,6 +50,7 @@ public class NettyClients {
 							.handler(new ClientInitializer(_msgSerializer));
 
 					channelFutures = new ArrayList<ChannelFuture>();
+					_init=true;
 				}
 			}
 		}
