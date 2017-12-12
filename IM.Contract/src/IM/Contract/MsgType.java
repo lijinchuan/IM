@@ -1,10 +1,10 @@
 package IM.Contract;
 
 public enum MsgType {
-	ECHO(0), // 回显
-	HeartBeat(1), // 心跳消息
+	ECHO(0),
+	HeartBeat(1),
 	Login(2),
-	ResponeCode(10000); // 登录请求
+	ResponeCode(10000);
 
 	private int _value;
 

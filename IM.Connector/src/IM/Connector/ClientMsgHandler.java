@@ -6,6 +6,7 @@ import java.util.Random;
 
 import IM.Contract.MsgType;
 import IM.Contract.ResponseCode;
+import IM.Util.LogManager;
 import IM.Util.ThreadPoolUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -36,20 +37,24 @@ public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
 		// TODO Auto-generated method stub
 		// super.exceptionCaught(ctx, cause);
 		// cause.printStackTrace();
-		System.out.println(cause.toString());
+		//System.out.println(cause.toString());
 	}
 
 	@Override
 	public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
 		// ctx.attr()
-		System.out.println("new user:" + ctx.name());
+		//System.out.println("new user:" + ctx.name());
+		
+		LogManager.Info("user come in:"+ctx.channel().id());
 	}
 
 	@Override
 	public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("user leave:" + ctx.name());
+		//System.out.println("user leave:" + ctx.name());
+		
+		LogManager.Info("user leave:"+ctx.channel().id());
 	}
 
 	public void closeClient(ChannelHandlerContext ctx, int errcode) {
@@ -180,6 +185,7 @@ public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
 		}
 		case HeartBeat: {
 			ctx.attr(Session.LASTHEARTBEATTIME).set(new Date());
+			LogManager.Info("user "+ctx.channel().id()+"heartbeat");
 			break;
 		}
 		case Login: {
