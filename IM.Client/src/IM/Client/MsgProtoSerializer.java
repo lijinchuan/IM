@@ -3,11 +3,21 @@ package IM.Client;
 import java.nio.ByteBuffer;
 
 import IM.Contract.MsgType;
+import IM.Contract.StringProto.SString;
 
 public class MsgProtoSerializer implements IMsgSerializer {
 
 	public Object readObject(MsgType msgtype, ByteBuffer buffer) throws Exception {
 		// TODO Auto-generated method stub
+		switch (msgtype) {
+		case ECHO: {
+			return SString.parseFrom(buffer).getStr();
+		}
+		default: {
+			break;
+		}
+		}
+
 		return null;
 	}
 

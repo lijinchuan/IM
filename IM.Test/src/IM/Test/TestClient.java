@@ -24,7 +24,7 @@ public class TestClient {
 				
 				clients.SendEcho("hello word:"+i);
 			}
-			Thread.sleep(100000);
+			Thread.sleep(1000000);
 			clients.close();
 		} catch (Exception ex) {
            ex.printStackTrace();

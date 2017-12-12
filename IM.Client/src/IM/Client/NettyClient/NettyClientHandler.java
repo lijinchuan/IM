@@ -13,9 +13,12 @@ import io.netty.handler.timeout.IdleStateEvent;
 public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
 	private IMsgSerializer _msgSerializer;
+	
+	private NettyClients _clients;
 
-	public NettyClientHandler(IMsgSerializer msgSerializer) {
+	public NettyClientHandler(IMsgSerializer msgSerializer,NettyClients clients) {
 		this._msgSerializer = msgSerializer;
+		this._clients=clients;
 	}
 
 	private void readFinished(ChannelHandlerContext ctx, ByteBuffer data) throws Exception {
@@ -88,7 +91,17 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     }
 
     protected void handleAllIdle(ChannelHandlerContext ctx) throws Exception {
-        Request.sendHeartbeat(ctx, this._msgSerializer);
+        //Request.sendHeartbeat(ctx, this._msgSerializer);
     }
 
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    	// TODO Auto-generated method stub
+    	if(ctx.channel().isActive()) {
+    		return;
+    	}
+    
+    	System.out.println("channelInactive");
+    	_clients.channelReconnect(ctx.channel());
+    }
 }

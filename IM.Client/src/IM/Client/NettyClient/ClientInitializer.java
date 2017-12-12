@@ -8,9 +8,12 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 public class ClientInitializer extends ChannelInitializer<SocketChannel> {
     private IMsgSerializer _pb;
+    
+    private NettyClients _clients;
 	
-    public ClientInitializer(IMsgSerializer msgSerializer) {
+    public ClientInitializer(IMsgSerializer msgSerializer,NettyClients clients) {
     	_pb=msgSerializer;
+    	_clients=clients;
     }
     
 	@Override
@@ -19,7 +22,7 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel> {
 		channel.pipeline()
 		.addLast(new IdleStateHandler(0, 0, 60))
 		.addLast(new ProtobufVarint32FrameDecoder())
-        .addLast(new NettyClientHandler(_pb)); 
+        .addLast(new NettyClientHandler(_pb,_clients)); 
 	}
 
 }
