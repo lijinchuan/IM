@@ -3,10 +3,12 @@ package IM.Client.NettyClient;
 import java.nio.ByteBuffer;
 
 import IM.Client.IMsgSerializer;
+import IM.Contract.MsgType;
 import IM.Util.ThreadPoolUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleStateEvent;
 
 public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
@@ -19,13 +21,13 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 	private void readFinished(ChannelHandlerContext ctx, ByteBuffer data) throws Exception {
 		data.flip();
 		// System.out.println(new String(data.array(), "utf-8"));
-		int msgtype = data.getShort() & 65535;
+		MsgType msgtype =MsgType.valueOf(data.getShort() & 65535);
 		switch (msgtype) {
-		case 0: {
-			System.out.println("客户端回显:" + (String) this._msgSerializer.ReadObject(msgtype, data));
+		case ECHO: {
+			System.out.println("客户端回显:" + (String) this._msgSerializer.readObject(msgtype, data));
 			break;
 		}
-		case 1: {
+		case HeartBeat: {
 			break;
 		}
 		default: {
@@ -55,5 +57,38 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 			buf.clear();
 		}
 	}
+	
+	@Override
+	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+		// TODO Auto-generated method stub
+		 if (evt instanceof IdleStateEvent) {
+	            IdleStateEvent e = (IdleStateEvent) evt;
+	            switch (e.state()) {
+	                case READER_IDLE:
+	                    handleReaderIdle(ctx);
+	                    break;
+	                case WRITER_IDLE:
+	                    handleWriterIdle(ctx);
+	                    break;
+	                case ALL_IDLE:
+	                    handleAllIdle(ctx);
+	                    break;
+	                default:
+	                    break;
+	            }
+	        }
+	}
+	
+	protected void handleReaderIdle(ChannelHandlerContext ctx) {
+      
+    }
+
+    protected void handleWriterIdle(ChannelHandlerContext ctx) {
+        
+    }
+
+    protected void handleAllIdle(ChannelHandlerContext ctx) throws Exception {
+        Request.sendHeartbeat(ctx, this._msgSerializer);
+    }
 
 }

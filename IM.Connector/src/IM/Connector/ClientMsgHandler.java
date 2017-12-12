@@ -10,6 +10,7 @@ import IM.Util.ThreadPoolUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.AttributeKey;
 
 public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
@@ -237,4 +238,35 @@ public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
 		// TODO Auto-generated method stub
 		super.channelReadComplete(ctx);
 	}
+	
+	@Override
+	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+		// TODO Auto-generated method stub
+		 if (evt instanceof IdleStateEvent) {
+	            IdleStateEvent e = (IdleStateEvent) evt;
+	            switch (e.state()) {
+	                case READER_IDLE:
+	                    handleReaderIdle(ctx);
+	                    break;
+	                case WRITER_IDLE:
+	                    handleWriterIdle(ctx);
+	                    break;
+	                case ALL_IDLE:
+	                    handleAllIdle(ctx);
+	                    break;
+	                default:
+	                    break;
+	            }
+	        }
+	}
+	
+	protected void handleReaderIdle(ChannelHandlerContext ctx) {
+       ctx.close();
+    }
+
+    protected void handleWriterIdle(ChannelHandlerContext ctx) {
+    }
+
+    protected void handleAllIdle(ChannelHandlerContext ctx) {
+    }
 }

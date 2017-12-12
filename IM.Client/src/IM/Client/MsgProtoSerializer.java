@@ -2,23 +2,28 @@ package IM.Client;
 
 import java.nio.ByteBuffer;
 
-import IM.Contract.StringProto.SString;
-import io.netty.buffer.ByteBuf;
+import IM.Contract.MsgType;
 
 public class MsgProtoSerializer implements IMsgSerializer {
 
-	public Object ReadObject(int msgtype, ByteBuffer buffer) throws Exception {
+	public Object readObject(MsgType msgtype, ByteBuffer buffer) throws Exception {
 		// TODO Auto-generated method stub
-		switch (msgtype) {
-		case 0: {
-			return SString.parseFrom(buffer).getStr();
-		}
-		}
 		return null;
 	}
 
-	public ByteBuf WriteObject(int msgtype, Object obj, ByteBuf buffer) throws Exception {
+	public byte[] writeObject(MsgType msgtype, Object obj) throws Exception {
 		// TODO Auto-generated method stub
+		switch (msgtype) {
+		case HeartBeat: {
+			ByteBuffer buffer = ByteBuffer.allocate(6);
+			buffer.putInt(2);
+			buffer.putShort((short) msgtype.getVal());
+			buffer.flip();
+			return buffer.array();
+		}
+		default:
+			break;
+		}
 		return null;
 	}
 
