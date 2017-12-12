@@ -91,7 +91,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     }
 
     protected void handleAllIdle(ChannelHandlerContext ctx) throws Exception {
-        //Request.sendHeartbeat(ctx, this._msgSerializer);
+        Request.sendHeartbeat(ctx, this._msgSerializer);
     }
 
     @Override
