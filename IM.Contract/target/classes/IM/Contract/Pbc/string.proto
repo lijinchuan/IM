@@ -1,7 +1,0 @@
-//syntax = "proto3";
-option java_package="IM.Contract";
-option java_outer_classname = "StringProto";
-
-message SString {
- required string str = 1;//同上  
-}
