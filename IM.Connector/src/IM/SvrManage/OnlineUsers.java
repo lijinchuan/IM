@@ -19,7 +19,7 @@ public class OnlineUsers {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			LogManager.Debug("在线用户数:"+UserList.size());
+			LogManager.Debug("在线用户数:"+UserList.mappingCount());
 		}
 		   
 	   }, 1000,1000);

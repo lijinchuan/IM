@@ -60,7 +60,7 @@ public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
 	public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
 		//System.out.println("user leave:" + ctx.name());
-		OnlineUsers.UserList.remove(ctx.attr(Session.UID));
+		OnlineUsers.UserList.remove(ctx.attr(Session.UID).get());
 		LogManager.Info("user leave:"+ctx.attr(Session.UID).get());
 	}
 

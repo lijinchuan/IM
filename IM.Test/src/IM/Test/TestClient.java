@@ -3,18 +3,22 @@ package IM.Test;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 import IM.Client.Client;
 import IM.Client.NettyClient.NettyClients;
 import IM.Util.LogManager;
+import io.netty.channel.Channel;
 
 public class TestClient {
 	public static void main(String[] args) throws Exception {
+		ConcurrentHashMap<String, String> UserList = new ConcurrentHashMap<String, String>();
+
 		NettyClients clients = new NettyClients("192.168.0.103", 20001);
 		LogManager.Debug("创建50000个长连接");
 		Date now = new Date();
 		int count = 0;
-		while (count < 50000) {
+		while (count < 10000) {
 			for (int i = 0; i < 1000; i++) {
 				clients.startNew();
 			}
@@ -36,8 +40,7 @@ public class TestClient {
 			sendCount += 1000;
 			Thread.sleep(5);
 		}
-		LogManager
-				.Debug("发送一百万消息成功,用时:" + String.valueOf(new Date().getTime() - now.getTime()) + "ms");
+		LogManager.Debug("发送一百万消息成功,用时:" + String.valueOf(new Date().getTime() - now.getTime()) + "ms");
 
 		// 随机自由发消息
 
@@ -50,8 +53,8 @@ public class TestClient {
 					clients.SendEcho("new msg:" + (sendCount++));
 				}
 				if (c > 0) {
-					LogManager
-							.Debug("发送消息"+c+"条成功,用时:" + String.valueOf(new Date().getTime() - now.getTime()) + "ms");
+					LogManager.Debug(
+							"发送消息" + c + "条成功,用时:" + String.valueOf(new Date().getTime() - now.getTime()) + "ms");
 				}
 				Thread.sleep(new Random().nextInt(10));
 			} catch (Exception ex) {
