@@ -3,9 +3,11 @@ package IM.Connector;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import IM.Contract.MsgType;
 import IM.Contract.ResponseCode;
+import IM.SvrManage.OnlineUsers;
 import IM.Util.LogManager;
 import IM.Util.ThreadPoolUtil;
 import io.netty.buffer.ByteBuf;
@@ -23,6 +25,8 @@ public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
 	final static int MAXBAGLEN = 1024 * 1024; // 最大允许单个包长
 	final static Exception READLENERROREXCEPTION = new Exception("read data len error");
 	final static Exception DATALENETOOLONGEXCEPTION = new Exception("data lenth too long error");
+	
+	static AtomicInteger _aotoid=new AtomicInteger();
 
 	private MsgBuffer msgbuf = new MsgBuffer();
 
@@ -46,15 +50,18 @@ public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
 		// ctx.attr()
 		//System.out.println("new user:" + ctx.name());
 		
-		LogManager.Info("user come in:"+ctx.channel().id());
+		String newid=String.valueOf(this._aotoid.incrementAndGet());
+		ctx.attr(Session.UID).set(newid);
+		OnlineUsers.UserList.put(newid, ctx.channel());
+		LogManager.Info("user come in:"+newid);
 	}
 
 	@Override
 	public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
 		//System.out.println("user leave:" + ctx.name());
-		
-		LogManager.Info("user leave:"+ctx.channel().id());
+		OnlineUsers.UserList.remove(ctx.attr(Session.UID));
+		LogManager.Info("user leave:"+ctx.attr(Session.UID).get());
 	}
 
 	public void closeClient(ChannelHandlerContext ctx, int errcode) {
@@ -63,7 +70,7 @@ public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
 			handlerRemoved(ctx);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LogManager.Error(e);
 		}
 	}
 
@@ -177,15 +184,16 @@ public class ClientMsgHandler extends ChannelInboundHandlerAdapter {
 		case ECHO: {
 
 			String s=(String) this._msgSerializer.readObject(msgtype, data);
-			System.out.println("回显:" + s);
+			//System.out.println("回显:" + s);
 			
-			Response.sendEcho(ctx, this._msgSerializer, s);
+			LogManager.Info("user "+ctx.attr(Session.UID)+"消息:"+s);
+			//Response.sendEcho(ctx, this._msgSerializer, s);
 			
 			break;
 		}
 		case HeartBeat: {
 			ctx.attr(Session.LASTHEARTBEATTIME).set(new Date());
-			LogManager.Info("user "+ctx.channel().id()+"heartbeat");
+			LogManager.Info("user "+ctx.attr(Session.UID)+"heartbeat");
 			break;
 		}
 		case Login: {
