@@ -18,5 +18,6 @@
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/IM.Client"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/IM.Connector"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/IM.Util"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
