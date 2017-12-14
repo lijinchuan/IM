@@ -1,2 +1,12 @@
 /IM.Connector/.metadata
 /.metadata/
+/IM.Client/target
+/IM.Client/.classpath
+/IM.Contract/target
+/IM.Contract/.classpath
+/IM.Test/target
+/IM.Test/.classpath
+/IM.Data/.classpath
+/IM.Util/.classpath
+/IM.Connector/target
+/IM.Connector/.classpath
